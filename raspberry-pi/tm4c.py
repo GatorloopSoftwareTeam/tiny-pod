@@ -50,7 +50,7 @@ def init(temp_callback, accel_callback, gyro_callback, volt_callback):
     data_thread.start()
 
 
-def format_data(data, index):
+def format_data(packet, index):
     return (int(ord(packet[index + 1])) << 8) | int(ord(packet[index]))
 
 
@@ -62,36 +62,48 @@ def read_data(temp_callback, accel_callback, gyro_callback, volt_callback):
             addr = packet[0]
             
             if addr == TEMP_ADDR:
-                temp = format_data(data, 1)
-                temp_callback()
+                temp = format_data(packet, 1)
+                temp_callback(temp)
             
             elif addr == ACCEL_ADDR:
-                x = format_data(data, 1)
-                y = format_data(data, 3)
-                z = format_data(data, 5)
+                x = format_data(packet, 1)
+                y = format_data(packet, 3)
+                z = format_data(packet, 5)
                 accel_callback(x, y, z)
             
             elif addr == GYRO_ADDR:
-                x = format_data(data, 1)
-                y = format_data(data, 3)
-                z = format_data(data, 5)
+                x = format_data(packet, 1)
+                y = format_data(packet, 3)
+                z = format_data(packet, 5)
                 gyro_callback(x, y, z)
             
             elif addr == VOLT_ADDR:
-                volts = format_data(data, 1)
+                volts = format_data(packet, 1)
                 volt_callback(volts)
 
 
 def temp(num):
+    print("temp")
+    print(num)
     return num
 
 def accel(x, y, z):
+    print("accel")
+    print(x)
+    print(y)
+    print(z)
     return x
 
 def gyro(x, y, z):
+    print("gyro")
+    print(x)
+    print(y)
+    print(z)
     return x
 
 def volt(num):
+    print("volt")
+    print(num)
     return num
 
 if __name__ == "__main__":
