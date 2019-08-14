@@ -3,11 +3,11 @@
 #include <stdarg.h>
 
 #include "bno055.h"
-#include "i2c_wrap.h"
+#include "../board_driver/i2c_wrap.h"
 
 void bno055Init()
 {
-    InitI2C0();
+    I2C0Init();
     //configure sensors
     bno055SendReg(OPR_MODE, IMU);
 }

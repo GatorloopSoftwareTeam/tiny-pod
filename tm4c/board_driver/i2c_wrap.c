@@ -1,137 +1,26 @@
-
-/*
- *  ======== pwmtest.c ========
- */
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdarg.h>
 
-/* XDCtools Header files */
-#include <xdc/std.h>
-#include <xdc/runtime/System.h>
-
-/* BIOS Header files */
-#include <ti/sysbios/BIOS.h>
-#include <ti/sysbios/knl/Task.h>
-
-/* TI-RTOS Header files */
-#include <ti/drivers/GPIO.h>
-#include <ti/drivers/PWM.h>
-#include <ti/drivers/I2C.h>
+//#include <ti/drivers/GPIO.h>
+//#include <ti/drivers/PWM.h>
+//#include <ti/drivers/I2C.h>
 
 
 #include "inc/hw_i2c.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
-#include "inc/hw_gpio.h"
+//#include "inc/hw_gpio.h"
 #include "driverlib/i2c.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/gpio.h"
 #include "driverlib/pin_map.h"
 
-
-/* Example/Board Header files */
-#include "Board.h"
-/* Board: EK_TM4C123GXL_ */
-
-#define BNO055_ADDRESS 0x28
-
-typedef enum BNO055_ADDRESSES
-{
-    CHIP_ID = 0,
-    ACC_ID,
-    MAG_ID,
-    GYR_ID,
-    SW_REV_ID_LSB,
-    SW_REV_ID_MSB,
-    BL_REV_ID,
-    PAGE_ID,
-    ACC_DATA_X_LSB,
-    ACC_DATA_X_MSB,
-    ACC_DATA_Y_LSB,
-    ACC_DATA_Y_MSB,
-    ACC_DATA_Z_LSB,
-    ACC_DATA_Z_MSB,
-    MAG_DATA_X_LSB,
-    MAG_DATA_X_MSB,
-    MAG_DATA_Y_LSB,
-    MAG_DATA_Y_MSB,
-    MAG_DATA_Z_LSB,
-    MAG_DATA_Z_MSB,
-    GYR_DATA_X_LSB,
-    GYR_DATA_X_MSB,
-    GYR_DATA_Y_LSB,
-    GYR_DATA_Y_MSB,
-    GYR_DATA_Z_LSB,
-    GYR_DATA_Z_MSB,
-    EUL_DATA_X_LSB,
-    EUL_DATA_X_MSB,
-    EUL_DATA_Y_LSB,
-    EUL_DATA_Y_MSB,
-    EUL_DATA_Z_LSB,
-    EUL_DATA_Z_MSB,
-    QUA_DATA_W_LSB,
-    QUA_DATA_W_MSB,
-    QUA_DATA_X_LSB,
-    QUA_DATA_X_MSB,
-    QUA_DATA_Y_LSB,
-    QUA_DATA_Y_MSB,
-    QUA_DATA_Z_LSB,
-    QUA_DATA_Z_MSB,
-    LIA_DATA_X_LSB,
-    LIA_DATA_X_MSB,
-    LIA_DATA_Y_LSB,
-    LIA_DATA_Y_MSB,
-    LIA_DATA_Z_LSB,
-    LIA_DATA_Z_MSB,
-    GRV_DATA_X_LSB,
-    GRV_DATA_X_MSB,
-    GRV_DATA_Y_LSB,
-    GRV_DATA_Y_MSB,
-    GRV_DATA_Z_LSB,
-    GRV_DATA_Z_MSB,
-    TEMP,
-    CALIB_STAT,
-    ST_RESULT,
-    INT_STA,
-    SYS_CLK_STATUS,
-    SYS_STATUS,
-    SYS_ERR,
-    UNIT_SEL,
-    OPR_MODE = 0x3D,
-    PWR_MODE,
-    SYS_TRIGGER,
-    TEMP_SOURCE,
-    AXIS_MAP_CONFIG,
-    AXIS_MAP_SIGN,
-    ACC_OFFSET_X_LSB = 0x55,
-    ACC_OFFSET_X_MSB,
-    ACC_OFFSET_Y_LSB,
-    ACC_OFFSET_Y_MSB,
-    ACC_OFFSET_Z_LSB,
-    ACC_OFFSET_Z_MSB,
-    MAG_OFFSET_X_LSB,
-    MAG_OFFSET_X_MSB,
-    MAG_OFFSET_Y_LSB,
-    MAG_OFFSET_Y_MSB,
-    MAG_OFFSET_Z_LSB,
-    MAG_OFFSET_Z_MSB,
-    GYR_OFFSET_X_LSB,
-    GYR_OFFSET_X_MSB,
-    GYR_OFFSET_Y_LSB,
-    GYR_OFFSET_Y_MSB,
-    GYR_OFFSET_Z_LSB,
-    GYR_OFFSET_Z_MSB,
-    ACC_RADIUS_LSB,
-    ACC_RADIUS_MSB,
-    MAG_RADIUS_LSB,
-    MAG_RADIUS_MSB
-} BNO055_ADDRESSES;
-
+#include "i2c_wrap.h"
 
 //initialize I2C module 0
 //Slightly modified version of TI's example code
-void InitI2C0(void)
+void I2C0Init(void)
 {
     //System_printf("Initializing I2C...\n");
     //System_flush();
@@ -260,68 +149,3 @@ uint8_t I2CReceive(uint32_t slave_addr, uint8_t reg)
     //return data pulled from the specified register
     return I2CMasterDataGet(I2C0_BASE);
 }
-
-struct bn055_accel
-{
-    int16_t x;
-    int16_t y;
-    int16_t z;
-};
-
-uint8_t bn055ReadReg(uint8_t reg)
-{
-    return (uint8_t)I2CReceive(BNO055_ADDRESS, reg);
-}
-
-void bn055SendReg(uint8_t reg, uint8_t data)
-{
-    I2CSend(BNO055_ADDRESS, 2, reg, data);
-}
-
-int16_t bn055ReadData(uint8_t lsbReg)
-{
-    uint8_t msbReg = lsbReg + 1; //Little endian
-
-    uint8_t lsbData = bn055ReadReg(lsbReg);
-    uint8_t msbData = bn055ReadReg(msbReg);
-
-
-    return (msbData << 8) | lsbData;
-}
-
-struct bn055_accel bn055ReadAccel()
-{
-    struct bn055_accel data;
-
-    data.x = bn055ReadData(ACC_DATA_X_LSB);
-    data.y = bn055ReadData(ACC_DATA_Y_LSB);
-    data.z = bn055ReadData(ACC_DATA_Z_LSB);
-    return data;
-}
-
-void bn055Init()
-{
-    InitI2C0();
-    bn055SendReg(OPR_MODE, 0x01);
-}
-
-
-int main(void)
-{
-    bn055Init();
-    //ConfigureUART();
-    //UARTprintf("Hello, world!\n");
-    while(1)
-    {
-        struct bn055_accel accel = bn055ReadAccel();
-        //UARTprintf("%d", accel.z);
-        System_printf("\nAcceleration:\n");
-        System_printf("x:%d\n",accel.x);
-        System_printf("y:%d\n",accel.y);
-        System_printf("z:%d\n",accel.z);
-        System_flush();
-    }
-
-    return 0;
-}
-

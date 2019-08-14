@@ -18,7 +18,7 @@ void spiInit()
 {
     //Enable SSI0
     SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
-    //Enabe Peripheral on GPIOA
+    //Enable Peripheral on GPIOA
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 
     //Configure the pin muxing for SSI0 functions
