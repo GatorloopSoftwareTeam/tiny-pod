@@ -1,0 +1,63 @@
+body {
+  background: linear-gradient(45deg, #0F2027,#2C5364) !important;
+}
+
+.headerfootercolor{
+  background: linear-gradient(45deg, #f12711,#f5af19) !important;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1 0 auto;
+  }
+
+.gradient-45deg-indigo-purple
+{
+      background: #2C5364;
+      background: -webkit-linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+      background: -moz-oldlinear-gradient(45deg, #303f9f, #7b1fa2) !important;
+      background:      -o-linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+      background:         linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn-block1 {
+    /*height: 330px; Your height here */
+  vertical-alignment: center;
+
+}
+
+.txter{
+  font-size:110%;
+  color: white;
+}
+
+.paraformat{
+  font-size:150%;
+  color: white;
+  margin: 5px;
+}
+
+.borderer{
+  border: 1px solid orange;
+}
+
+.trr:hover {
+   color: black;
+}
+
+.heightgraph{
+  height: 285px;
+}
+
+.mt{
+  font-size: 110%;
+}

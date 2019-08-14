@@ -1,0 +1,205 @@
+<head>
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Import materialize.css-->
+  <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
+
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+   <link rel="stylesheet" href='/static/dashboard.css' />
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+  
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+
+</head>
+
+<main>
+
+  <nav>
+    <div class="nav-wrapper headerfootercolor">
+      <a href="#" class="brand-logo center">Gatorl&#8734;p</a>
+      <ul id="nav-mobile" class="left hide-on-med-and-down">
+        <!-- <li><a href="sass.html">Home</a></li> -->
+      </ul>
+    </div>
+  </nav>
+<br><br>
+  <div class="container">
+    <div class="row">
+      <div class="col s4 m4 l3">
+        <div class="card-panel blue-grey heightgraph">
+          <div class="row center">
+          <button class="waves-effect waves-light btn-large btn-block">Start Pod</button>
+        </div>
+        <div class="row center">
+          <button class="waves-effect waves-light btn orange btn-block">Before Tunnel Testing</button>
+        </div>
+        <div class="row center">
+          <button class="waves-effect waves-light btn center orange btn-block">In Tunnel Testing</button>
+        </div>
+        <div class="row center">
+          <button class="waves-effect waves-light btn-large red darken-4 disabled btn-block">EMERGENCY STOP</button>
+        </div>
+        </div>
+      </div>
+      
+      <div class="col s4 m4 l9">
+        <div class="card-panel blue-grey heightgraph">
+          <div style="width: 55%;float:left;margin-left:3%">
+             <canvas id="myChart"></canvas>
+          </div>
+    <div style="width: 40%;float:right; color:white;margin-top:1%">
+      
+          <table class="centered mt" >
+            <tr>
+              <td id="timePassed"> Time passed (s) </td>
+              <td> 00 </td>
+            </tr>
+            <tr>
+              <td> Velocity (m/s)</td>
+              <td id="velocity"> 000 </td>
+            </tr>
+            <tr>
+              <td> Acceleration (m/s<sup>2</sup>)</td>
+              <td id="acceleration"> 00s </td>
+            </tr>
+            <tr>
+              <td> Position (m) </td>
+              <td id="position"> 00 of 0000m </td>
+            </tr>
+          </table>
+      </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">      
+      <div class="col s8 m8 l12 ">
+        <div class="card-panel blue-grey btn-block1">
+          <p class="center paraformat">Status </p>
+          <table class="table table-dark table-responsive centered highlight" id="batteryTable">
+                <thead>
+                  <tr class="orange txter">
+                    <th>Battery</th>
+                    <th>Min Temp</th>
+                    <th>Actual Temp</th>
+                    <th>Max Temp</th>
+                    <th>Min I</th>
+                    <th>Actual I</th>
+                    <th>Max I</th>
+                    <th>Min V</th>
+                    <th>Actual V</th>
+                    <th>Max V</th>
+                  </tr>
+                </thead>
+                <tbody id="botTable">
+                  <tr class="highlight txter borderer trr">
+                    <td>Primary</td>
+                    <td id="b1MinTemp">20</td>
+                    <td id="b1ActualTemp" class="bg-success">28</td>
+                    <td id="b1MaxTemp">36</td>
+                    <td id="b1MinCurrent">4</td>
+                    <td id="b1ActualCurrent" class="bg-success">5</td>
+                    <td id="b1MaxCurrent">6</td>
+                    <td id="b1MinVoltage">295</td>
+                    <td id="b1ActualVoltage" class="bg-success">300</td>
+                    <td id="b1MaxVoltage">305</td>
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s4 m4 l8">
+        <div class="card-panel blue-grey">
+          <span class="black-text text-darken-4">Card5<br><br><br><br><br><br><br><br></span>
+        </div>
+      </div>
+      <div class="col s8 m8 l4">
+        <div class="card-panel blue-grey">
+          <span class="black-text text-darken-4">Card6<br><br><br><br><br><br><br><br></span>
+        </div>
+      </div>
+    </div>
+  </div> 
+
+
+</main>
+
+<footer class="footer-copyright deep-orange">
+  <div class="container">
+        <h6 class="white-text">© 2019 Copyright Gatorloop</h6>
+  </div>
+</footer>
+
+<script>
+
+
+
+var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: ["0", "2", "4", "6", "8", "10", "12"],
+        datasets: [{
+            label: "Acceleration Curve",
+            backgroundColor: '#ff9800' ,
+            borderColor: '#1d998d',
+            data: [100, 80, 70, 20, 10, -5, -200],
+        }]
+    },
+
+    // Configuration options go here
+    options: {
+      legend: {
+            labels: {
+                fontColor: "white",
+                fontSize: 15
+            }
+        },
+      scales: {
+        yAxes: [{
+                    gridLines: {
+                        color: '#90a4ae' //give the needful color
+                    },
+                  ticks: {
+                        fontColor: "white",
+                        fontSize: 12,
+                        },
+                    display: true,
+                    stacked: true
+                }],
+        
+        
+                xAxes: [
+                    {
+                        gridLines: {
+                            color: '#90a4ae', 
+                            display: true,
+                        },
+                        ticks: {
+                        fontColor: "white",
+                        fontSize: 12,
+                        beginAtZero: true
+                        },
+                        stacked: true, 
+                    }
+                ],
+              
+                }
+            }
+        });
+  
+
+</script>
+
