@@ -20,7 +20,7 @@
 
 //initialize I2C module 0
 //Slightly modified version of TI's example code
-void InitI2C0(void)
+void I2C0Init(void)
 {
     //System_printf("Initializing I2C...\n");
     //System_flush();

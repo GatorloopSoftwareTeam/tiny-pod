@@ -1,8 +1,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdarg.h>
-#include <math.h>
-//#include <ti/drivers/PWM.h>
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
@@ -15,7 +13,7 @@
 #include "pwm_wrap.h"
 
 
-void InitPWM(void)
+void pwmInit(void)
 {
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF); //enables the peripherals on port F
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB); //enables the peripherals on port B
@@ -120,24 +118,4 @@ void PWMSetDuty(uint32_t base, uint32_t pwm_out, int16_t duty)
     PWMOutputInvert(base, outbit, duty == 0);
 
     PWMPulseWidthSet(base, pwm_out, duty);
-}
-
-void setSpeed(int16_t speed)
-{
-    speed = fmax(fmin(speed, 1000), -1000);
-    if(speed < 0)
-    {
-        speed *= -1;
-        PWMSetDuty(MOTOR_RIGHT_INVERT_BASE, MOTOR_RIGHT_INVERT, speed);
-        PWMSetDuty(MOTOR_LEFT_INVERT_BASE, MOTOR_LEFT_INVERT, speed);
-        PWMSetDuty(MOTOR_RIGHT_NORMAL_BASE, MOTOR_RIGHT_NORMAL, 0);
-        PWMSetDuty(MOTOR_LEFT_NORMAL_BASE, MOTOR_LEFT_NORMAL, 0);
-    }
-    else
-    {
-        PWMSetDuty(MOTOR_RIGHT_INVERT_BASE, MOTOR_RIGHT_INVERT, 0);
-        PWMSetDuty(MOTOR_LEFT_INVERT_BASE, MOTOR_LEFT_INVERT, 0);
-        PWMSetDuty(MOTOR_RIGHT_NORMAL_BASE, MOTOR_RIGHT_NORMAL, speed);
-        PWMSetDuty(MOTOR_LEFT_NORMAL_BASE, MOTOR_LEFT_NORMAL, speed);
-    }
 }

@@ -17,7 +17,8 @@
 #define MOTOR_RIGHT_NORMAL PWM_OUT_1 //PB7
 #define MOTOR_RIGHT_INVERT PWM_OUT_0 //PB6
 
-extern void InitPWM(void);
+extern void pwmInit(void);
 extern void setSpeed(int16_t speed);
+void pwmSetDuty(uint32_t base, uint32_t pwm_out, int16_t duty);
 
 #endif /* PWM_WRAP_H_ */
