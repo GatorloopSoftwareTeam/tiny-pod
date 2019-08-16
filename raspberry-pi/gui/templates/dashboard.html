@@ -14,8 +14,8 @@
 
   <!-- Compiled and minified JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
-  
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
 
 </head>
@@ -36,7 +36,7 @@
       <div class="col s4 m4 l3">
         <div class="card-panel blue-grey heightgraph">
           <div class="row center">
-          <button class="waves-effect waves-light btn-large btn-block">Start Pod</button>
+          <button class="waves-effect waves-light btn-large btn-block" id="startPod" onclick="starter(this)">Start Pod</button>
         </div>
         <div class="row center">
           <button class="waves-effect waves-light btn orange btn-block">Before Tunnel Testing</button>
@@ -45,18 +45,18 @@
           <button class="waves-effect waves-light btn center orange btn-block">In Tunnel Testing</button>
         </div>
         <div class="row center">
-          <button class="waves-effect waves-light btn-large red darken-4 disabled btn-block">EMERGENCY STOP</button>
+          <button class="waves-effect waves-light btn-large red darken-4 disabled btn-block" id="stopPod" onclick="stopper()">EMERGENCY STOP</button>
         </div>
         </div>
       </div>
-      
+
       <div class="col s4 m4 l9">
         <div class="card-panel blue-grey heightgraph">
           <div style="width: 55%;float:left;margin-left:3%">
              <canvas id="myChart"></canvas>
           </div>
     <div style="width: 40%;float:right; color:white;margin-top:1%">
-      
+
           <table class="centered mt" >
             <tr>
               <td id="timePassed"> Time passed (s) </td>
@@ -68,7 +68,7 @@
             </tr>
             <tr>
               <td> Acceleration (m/s<sup>2</sup>)</td>
-              <td id="acceleration"> 00s </td>
+              <td id="acceId"> 00s </td>
             </tr>
             <tr>
               <td> Position (m) </td>
@@ -79,7 +79,7 @@
         </div>
       </div>
     </div>
-    <div class="row">      
+    <div class="row">
       <div class="col s8 m8 l12 ">
         <div class="card-panel blue-grey btn-block1">
           <p class="center paraformat">Status </p>
@@ -101,15 +101,15 @@
                 <tbody id="botTable">
                   <tr class="highlight txter borderer trr">
                     <td>Primary</td>
-                    <td id="b1MinTemp">20</td>
-                    <td id="b1ActualTemp" class="bg-success">28</td>
-                    <td id="b1MaxTemp">36</td>
-                    <td id="b1MinCurrent">4</td>
-                    <td id="b1ActualCurrent" class="bg-success">5</td>
-                    <td id="b1MaxCurrent">6</td>
-                    <td id="b1MinVoltage">295</td>
-                    <td id="b1ActualVoltage" class="bg-success">300</td>
-                    <td id="b1MaxVoltage">305</td>
+                    <td id="b1MinTemp">X</td>
+                    <td id="tempId" class="bg-success">X</td>
+                    <td id="b1MaxTemp">X</td>
+                    <td id="b1MinCurrent">X</td>
+                    <td id="currId" class="bg-success">X</td>
+                    <td id="b1MaxCurrent">X</td>
+                    <td id="b1MinVoltage">X</td>
+                    <td id="voltId" class="bg-success">X</td>
+                    <td id="b1MaxVoltage">X</td>
                   </tr>
                 </tbody>
               </table>
@@ -128,7 +128,7 @@
         </div>
       </div>
     </div>
-  </div> 
+  </div>
 
 
 </main>
@@ -139,8 +139,76 @@
   </div>
 </footer>
 
-<script>
+<script type="text/javascript" language="javascript">
 
+//Setinterval Timer id variables
+var tid, vid, aid;
+
+//function to request Temperature through an api call
+function requestTemperature(){
+  var request = new XMLHttpRequest()
+  const tempId = document.getElementById('tempId')
+  request.open('GET', 'http://localhost:5000/api/temperature', true)
+  request.onload = function() {
+    // Begin accessing JSON data here
+    var data = JSON.parse(this.response)
+    if (request.status >= 200 && request.status < 400)
+         tempId.innerHTML = (JSON.stringify(data[0].t))
+    else
+        console.log('error')
+  }
+  request.send()
+}
+
+//function to request Voltage through an api call
+function requestVoltage(){
+  var request = new XMLHttpRequest()
+  const tempId = document.getElementById('voltId')
+  request.open('GET', 'http://localhost:5000/api/voltage', true)
+  request.onload = function() {
+    // Begin accessing JSON data here
+    var data = JSON.parse(this.response)
+    if (request.status >= 200 && request.status < 400)
+         tempId.innerHTML = (JSON.stringify(data[0].v))
+    else
+        console.log('error')
+  }
+  request.send()
+}
+
+//function to request Accelaration through an api call
+function requestAccelaration(){
+  var request = new XMLHttpRequest()
+  const tempId = document.getElementById('acceId')
+  request.open('GET', 'http://localhost:5000/api/accelaration', true)
+  request.onload = function() {
+    // Begin accessing JSON data here
+    var data = JSON.parse(this.response)
+    if (request.status >= 200 && request.status < 400)
+         acceId.innerHTML = (JSON.stringify(data.a[0].x))
+    else
+        console.log('error')
+  }
+  request.send()
+}
+
+//Start button actions
+function starter(){
+  var element = document.getElementById("stopPod");
+  element.classList.remove("disabled");
+  tid = setInterval(requestTemperature,5000);
+  vid = setInterval(requestVoltage,5000);
+  aid = setInterval(requestAccelaration,5000);
+}
+
+//Emergency Stop button actions
+function stopper(){
+  clearInterval(tid);
+  clearInterval(vid);
+  clearInterval(aid);
+  var element = document.getElementById("stopPod");
+  element.classList.add("disabled");
+}
 
 
 var ctx = document.getElementById('myChart').getContext('2d');
@@ -179,12 +247,12 @@ var chart = new Chart(ctx, {
                     display: true,
                     stacked: true
                 }],
-        
-        
+
+
                 xAxes: [
                     {
                         gridLines: {
-                            color: '#90a4ae', 
+                            color: '#90a4ae',
                             display: true,
                         },
                         ticks: {
@@ -192,14 +260,13 @@ var chart = new Chart(ctx, {
                         fontSize: 12,
                         beginAtZero: true
                         },
-                        stacked: true, 
+                        stacked: true,
                     }
                 ],
-              
+
                 }
             }
         });
-  
+
 
 </script>
-
