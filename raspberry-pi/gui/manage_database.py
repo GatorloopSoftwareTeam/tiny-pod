@@ -1,9 +1,13 @@
 import sqlite3 as lite
 import sys, datetime
+import ctypes
 
 # This file contains insert and get functions for sensors
 
 # Insert values into Tables
+
+def convertSigned(num):
+    return ctypes.c_short(num).value
 
 def insertTableTemperature(t):
     conn = lite.connect('SensorData.db')
@@ -15,7 +19,7 @@ def insertTableTemperature(t):
 def insertTableAccelaration(x, y, z):
     conn = lite.connect('SensorData.db')
     curr=conn.cursor()
-    curr.execute("INSERT INTO ACCELARATION VALUES( (?), (?), (?), (?))", (datetime.datetime.now(), x, y, z))
+    curr.execute("INSERT INTO ACCELARATION VALUES( (?), (?), (?), (?))", (datetime.datetime.now(), convertSigned(x), y, z))
     conn.commit()
     conn.close()
 

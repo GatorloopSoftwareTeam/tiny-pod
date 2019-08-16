@@ -1,5 +1,7 @@
 from flask import Flask, render_template, jsonify
 from manage_database import getTableAccelaration, getTableVoltage, getTableTemperature, getTableGyroscope
+from manage_database import insertTableTemperature, insertTableAccelaration, insertTableGyroscope, insertTableVoltage
+from drivers import tm4c
 
 app = Flask(__name__)
 
@@ -8,6 +10,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/dashboard')
+@app.route('/dashboard/')
 def dashboard():
     return render_template('dashboard.html')
 
@@ -40,4 +43,5 @@ def getVoltage():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    tm4c.init(insertTableTemperature, insertTableAccelaration, insertTableGyroscope, insertTableVoltage)
+    app.run(debug=True, host='0.0.0.0')

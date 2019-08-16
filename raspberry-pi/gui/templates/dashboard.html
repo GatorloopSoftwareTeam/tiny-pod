@@ -196,9 +196,9 @@ function requestAccelaration(){
 function starter(){
   var element = document.getElementById("stopPod");
   element.classList.remove("disabled");
-  tid = setInterval(requestTemperature,5000);
-  vid = setInterval(requestVoltage,5000);
-  aid = setInterval(requestAccelaration,5000);
+  tid = setInterval(requestTemperature,100);
+  vid = setInterval(requestVoltage,100);
+  aid = setInterval(requestAccelaration,100);
 }
 
 //Emergency Stop button actions

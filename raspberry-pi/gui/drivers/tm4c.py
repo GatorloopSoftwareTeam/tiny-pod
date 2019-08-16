@@ -1,4 +1,4 @@
-import uart
+from drivers import uart
 import threading
 import time
 
